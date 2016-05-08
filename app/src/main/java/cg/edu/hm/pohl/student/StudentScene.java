@@ -53,13 +53,14 @@ public class StudentScene extends VRComponent {
     private DataStructures.Locations locations = new DataStructures.Locations();
     private DataStructures.AnimationParameters animation = new DataStructures.AnimationParameters();
 
-    private float[] lightpos = { 0.f, 5.f, -4.f, 1.f };
+    private float[] lightpos = {0.f, 5.f, -4.f, 1.f};
     private float[] lightpos_eye = new float[4];
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
     public StudentScene() {
         shader = CardboardGraphicsActivity.studentSceneShader;
+
         createCone();
         // Get the shader's attribute and uniform handles used to delegate data from
         // the CPU to the GPU
@@ -142,7 +143,7 @@ public class StudentScene extends VRComponent {
         coneBottomNormals = new float[NUMBER_OF_VERTICES];
 
         int index = 0;
-        for(float angle = 0.0f; angle < PI_2; angle += DELTA_ANGLE) {
+        for (float angle = 0.0f; angle < PI_2; angle += DELTA_ANGLE) {
             // Calculate x and z of the cone
             float x1 = (float) (RADIUS * Math.sin(angle));
             float z1 = (float) (RADIUS * Math.cos(angle));
@@ -201,7 +202,7 @@ public class StudentScene extends VRComponent {
 
             // Alternate the color
             float colorR, colorG, colorB, colorA;
-            if((index % 2) == 0) {
+            if ((index % 2) == 0) {
                 colorR = 1f;
                 colorG = 0f;
                 colorB = 0f;

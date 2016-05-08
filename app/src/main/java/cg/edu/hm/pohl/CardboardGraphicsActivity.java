@@ -3,6 +3,7 @@ package cg.edu.hm.pohl;
 import ba.pohl1.hm.edu.vrlibrary.maths.Vector3;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.ArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.LockedArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.waypoint.WaypointNavigator;
 import ba.pohl1.hm.edu.vrlibrary.ui.AbstractCardboardActivity;
@@ -41,7 +42,7 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
     protected VRComponent createScene() {
         CardboardGraphics.camera.translateY(2f);
         CardboardGraphics.camera.setCanMoveInY(false);
-        setNavigator(new LockedArrowTapNavigator());
+        setNavigator(new ArrowTapNavigator());
 
         final VRRoom vrRoom = new VRRoom(25, 10, 25);
 
