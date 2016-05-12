@@ -1,4 +1,4 @@
-package cg.edu.hm.pohl.student;
+package edu.hm.cs.fh.cg.shapes;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -9,8 +9,8 @@ import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.rendering.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
 import ba.pohl1.hm.edu.vrlibrary.util.Shader;
-import cg.edu.hm.pohl.CardboardGraphicsActivity;
-import cg.edu.hm.pohl.DataStructures;
+import edu.hm.cs.fh.cg.CardboardGraphicsActivity;
+import edu.hm.cs.fh.cg.DataStructures;
 
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.glDrawArrays;
@@ -19,13 +19,13 @@ import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
 /**
- * Created by Pohl on 14.04.2016.
+ * Created by Fabio Hellmann on 12.05.2016.
  */
-public class StudentScene extends VRComponent {
+public class Cylinder3D extends VRComponent {
 
-    private static final String TAG = "StudentScene";
-    private static final int TESSELLATION = 8;
-    private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2;
+    private static final String TAG = Cylinder3D.class.getSimpleName();
+    private static final int TESSELLATION = 64;
+    private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2 * 2;
     private static final float RADIUS = .5f;
     private static final double PI_2 = 2.0f * Math.PI;
     private static final double DELTA_ANGLE = (Math.PI / (TESSELLATION / 2));
@@ -35,18 +35,10 @@ public class StudentScene extends VRComponent {
     private static final int FLOATS_PER_NORMAL = 3;
 
     private float[] coneVertices;
-    private float[] coneColors;
-    private float[] coneNormals;
-    private float[] coneBottomVertices;
-    private float[] coneBottomColors;
-    private float[] coneBottomNormals;
 
     private FloatBuffer verticesBuffer;
     private FloatBuffer colorsBuffer;
     private FloatBuffer normalsBuffer;
-    private FloatBuffer verticesBottomBuffer;
-    private FloatBuffer colorsBottomBuffer;
-    private FloatBuffer normalsBottomBuffer;
     private Shader shader;
 
     private DataStructures.Matrices matrices = new DataStructures.Matrices();
@@ -58,10 +50,10 @@ public class StudentScene extends VRComponent {
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-    public StudentScene() {
+    public Cylinder3D() {
         shader = CardboardGraphicsActivity.studentSceneShader;
 
-        createCone();
+        createCylinder();
         // Get the shader's attribute and uniform handles used to delegate data from
         // the CPU to the GPU
         locations.vertex_in = shader.getAttribute("vertex_in");
@@ -84,11 +76,6 @@ public class StudentScene extends VRComponent {
         // Set the identity of the matrix
         identity();
 
-        // Transform the shape
-        translateZ(-5f);
-        translateY(2.0f);
-        rotateZ(90);
-
         // Update collision box bounds
         updateBounds(this);
 
@@ -108,8 +95,7 @@ public class StudentScene extends VRComponent {
         glUniform4fv(locations.light_specular, 1, light.specular, 0);
 
         // Finally draw the cone
-        drawTopPart();
-        drawBottomPart();
+        drawCylinder();
 
         // Check for possible errors.
         // If there is one, it is most probably related to an issue with the
@@ -118,7 +104,7 @@ public class StudentScene extends VRComponent {
         CGUtils.checkGLError(TAG, "Error while drawing!");
     }
 
-    private void drawTopPart() {
+    private void drawCylinder() {
         glVertexAttribPointer(locations.vertex_in, FLOATS_PER_VERTEX, GL_FLOAT, false, 0, verticesBuffer);
         glVertexAttribPointer(locations.color_in, FLOATS_PER_COLOR, GL_FLOAT, false, 0, colorsBuffer);
         glVertexAttribPointer(locations.normal_in, FLOATS_PER_NORMAL, GL_FLOAT, false, 0, normalsBuffer);
@@ -126,21 +112,10 @@ public class StudentScene extends VRComponent {
         glDrawArrays(GLES20.GL_TRIANGLES, 0, coneVertices.length / FLOATS_PER_VERTEX);
     }
 
-    private void drawBottomPart() {
-        glVertexAttribPointer(locations.vertex_in, FLOATS_PER_VERTEX, GL_FLOAT, false, 0, verticesBottomBuffer);
-        glVertexAttribPointer(locations.color_in, FLOATS_PER_COLOR, GL_FLOAT, false, 0, colorsBottomBuffer);
-        glVertexAttribPointer(locations.normal_in, FLOATS_PER_NORMAL, GL_FLOAT, false, 0, normalsBottomBuffer);
-
-        glDrawArrays(GLES20.GL_TRIANGLES, 0, coneBottomVertices.length / FLOATS_PER_VERTEX);
-    }
-
-    private void createCone() {
+    private void createCylinder() {
         coneVertices = new float[NUMBER_OF_VERTICES];
-        coneColors = new float[NUMBER_OF_VERTICES / 3 * 4];
-        coneNormals = new float[NUMBER_OF_VERTICES];
-        coneBottomVertices = new float[NUMBER_OF_VERTICES];
-        coneBottomColors = new float[NUMBER_OF_VERTICES / 3 * 4];
-        coneBottomNormals = new float[NUMBER_OF_VERTICES];
+        final float[] coneColors = new float[NUMBER_OF_VERTICES / 3 * 4];
+        final float[] coneNormals = new float[NUMBER_OF_VERTICES];
 
         int index = 0;
         for (float angle = 0.0f; angle < PI_2; angle += DELTA_ANGLE) {
@@ -151,54 +126,54 @@ public class StudentScene extends VRComponent {
             float z2 = (float) (RADIUS * Math.cos(angle + DELTA_ANGLE));
 
             // Calculate offset for vertices and colors
-            final int vertexIndex = index * 9;
-            final int colorIndex = index * 12;
+            final int vertexIndex = index * 9 * 2;
+            final int colorIndex = index * 12 * 2;
             // Increment the index
             index++;
 
             // First vertex
-            coneVertices[vertexIndex] = 0;
-            coneVertices[vertexIndex + 1] = .5f;
-            coneVertices[vertexIndex + 2] = 0;
+            coneVertices[vertexIndex] = x1;
+            coneVertices[vertexIndex + 1] = 0;
+            coneVertices[vertexIndex + 2] = z1;
             coneNormals[vertexIndex] = 0;
-            coneNormals[vertexIndex + 1] = 1f;
+            coneNormals[vertexIndex + 1] = 0;
             coneNormals[vertexIndex + 2] = 0;
             // Second vertex
-            coneVertices[vertexIndex + 3] = x1;
-            coneVertices[vertexIndex + 4] = -.5f;
-            coneVertices[vertexIndex + 5] = z1;
-            coneNormals[vertexIndex + 3] = x1;
-            coneNormals[vertexIndex + 4] = .5f;
-            coneNormals[vertexIndex + 5] = z1;
+            coneVertices[vertexIndex + 3] = x2;
+            coneVertices[vertexIndex + 4] = 0;
+            coneVertices[vertexIndex + 5] = z2;
+            coneNormals[vertexIndex + 3] = x2;
+            coneNormals[vertexIndex + 4] = 0;
+            coneNormals[vertexIndex + 5] = z2;
             // Third vertex
             coneVertices[vertexIndex + 6] = x2;
-            coneVertices[vertexIndex + 7] = -.5f;
+            coneVertices[vertexIndex + 7] = 1f;
             coneVertices[vertexIndex + 8] = z2;
             coneNormals[vertexIndex + 6] = x2;
-            coneNormals[vertexIndex + 7] = .5f;
+            coneNormals[vertexIndex + 7] = -1f;
             coneNormals[vertexIndex + 8] = z2;
 
-            // First bottom vertex
-            coneBottomVertices[vertexIndex] = 0;
-            coneBottomVertices[vertexIndex + 1] = -.5f;
-            coneBottomVertices[vertexIndex + 2] = 0;
-            coneBottomNormals[vertexIndex] = 0;
-            coneBottomNormals[vertexIndex + 1] = 1f;
-            coneBottomNormals[vertexIndex + 2] = 0;
-            // Second bottom vertex
-            coneBottomVertices[vertexIndex + 3] = x1;
-            coneBottomVertices[vertexIndex + 4] = -.5f;
-            coneBottomVertices[vertexIndex + 5] = z1;
-            coneBottomNormals[vertexIndex + 3] = 0;
-            coneBottomNormals[vertexIndex + 4] = 1f;
-            coneBottomNormals[vertexIndex + 5] = 0;
-            // Third bottom vertex
-            coneBottomVertices[vertexIndex + 6] = x2;
-            coneBottomVertices[vertexIndex + 7] = -.5f;
-            coneBottomVertices[vertexIndex + 8] = z2;
-            coneBottomNormals[vertexIndex + 6] = 0;
-            coneBottomNormals[vertexIndex + 7] = 1f;
-            coneBottomNormals[vertexIndex + 8] = 0;
+            // First vertex
+            coneVertices[vertexIndex + 9] = x1;
+            coneVertices[vertexIndex + 10] = 1f;
+            coneVertices[vertexIndex + 11] = z1;
+            coneNormals[vertexIndex + 9] = 0;
+            coneNormals[vertexIndex + 10] = 1f;
+            coneNormals[vertexIndex + 11] = 0;
+            // Second vertex
+            coneVertices[vertexIndex + 12] = x1;
+            coneVertices[vertexIndex + 13] = 0;
+            coneVertices[vertexIndex + 14] = z1;
+            coneNormals[vertexIndex + 12] = x1;
+            coneNormals[vertexIndex + 13] = 0;
+            coneNormals[vertexIndex + 14] = z1;
+            // Third vertex
+            coneVertices[vertexIndex + 15] = x2;
+            coneVertices[vertexIndex + 16] = 1f;
+            coneVertices[vertexIndex + 17] = z2;
+            coneNormals[vertexIndex + 15] = x2;
+            coneNormals[vertexIndex + 16] = -1f;
+            coneNormals[vertexIndex + 17] = z2;
 
             // Alternate the color
             float colorR, colorG, colorB, colorA;
@@ -225,28 +200,23 @@ public class StudentScene extends VRComponent {
             coneColors[colorIndex + 9] = colorG;
             coneColors[colorIndex + 10] = colorB;
             coneColors[colorIndex + 11] = colorA;
-
-            coneBottomColors[colorIndex] = colorR;
-            coneBottomColors[colorIndex + 1] = colorG;
-            coneBottomColors[colorIndex + 2] = colorB;
-            coneBottomColors[colorIndex + 3] = colorA;
-            coneBottomColors[colorIndex + 4] = colorR;
-            coneBottomColors[colorIndex + 5] = colorG;
-            coneBottomColors[colorIndex + 6] = colorB;
-            coneBottomColors[colorIndex + 7] = colorA;
-            coneBottomColors[colorIndex + 8] = colorR;
-            coneBottomColors[colorIndex + 9] = colorG;
-            coneBottomColors[colorIndex + 10] = colorB;
-            coneBottomColors[colorIndex + 11] = colorA;
+            coneColors[colorIndex + 12] = colorR;
+            coneColors[colorIndex + 13] = colorG;
+            coneColors[colorIndex + 14] = colorB;
+            coneColors[colorIndex + 15] = colorA;
+            coneColors[colorIndex + 16] = colorR;
+            coneColors[colorIndex + 17] = colorG;
+            coneColors[colorIndex + 18] = colorB;
+            coneColors[colorIndex + 19] = colorA;
+            coneColors[colorIndex + 20] = colorR;
+            coneColors[colorIndex + 21] = colorG;
+            coneColors[colorIndex + 22] = colorB;
+            coneColors[colorIndex + 23] = colorA;
         }
 
         // Create buffers needed by the GPU
         verticesBuffer = CGUtils.createFloatBuffer(coneVertices);
         colorsBuffer = CGUtils.createFloatBuffer(coneColors);
         normalsBuffer = CGUtils.createFloatBuffer(coneNormals);
-
-        verticesBottomBuffer = CGUtils.createFloatBuffer(coneBottomVertices);
-        colorsBottomBuffer = CGUtils.createFloatBuffer(coneBottomColors);
-        normalsBottomBuffer = CGUtils.createFloatBuffer(coneBottomNormals);
     }
 }

@@ -1,4 +1,4 @@
-package cg.edu.hm.pohl;
+package edu.hm.cs.fh.cg;
 
 /**
  * Created by Markus Miller on 25.02.2016.

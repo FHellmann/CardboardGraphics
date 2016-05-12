@@ -1,8 +1,7 @@
-package cg.edu.hm.pohl;
+package edu.hm.cs.fh.cg;
 
 import ba.pohl1.hm.edu.vrlibrary.maths.Vector3;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
-import ba.pohl1.hm.edu.vrlibrary.model.shapes.Cube;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.ArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.waypoint.WaypointNavigator;
@@ -10,9 +9,9 @@ import ba.pohl1.hm.edu.vrlibrary.ui.AbstractCardboardActivity;
 import ba.pohl1.hm.edu.vrlibrary.util.CardboardGraphics;
 import ba.pohl1.hm.edu.vrlibrary.util.Shader;
 import ba.pohl1.hm.edu.vrlibrary.model.shapes.VRRoom;
-import cg.edu.hm.pohl.shapes.Cylinder3D;
-import cg.edu.hm.pohl.shapes.Sphere;
-import cg.edu.hm.pohl.student.StudentScene;
+import cg.edu.hm.pohl.R;
+import edu.hm.cs.fh.cg.models.Pavilion3D;
+import edu.hm.cs.fh.cg.models.StudentScene;
 
 /**
  * Created by Pohl on 14.04.2016.
@@ -48,17 +47,17 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
         final VRRoom vrRoom = new VRRoom(25, 10, 25);
 
-        //studentScene = new StudentScene();
-        //vrRoom.add(studentScene);
+        studentScene = new StudentScene();
+        studentScene.translateX(2f);
+        vrRoom.add(studentScene);
         //final Cube cube = new Cube();
         //cube.translate(2, 1, 0);
         //vrRoom.add(cube);
         //final Sphere sphere = new Sphere();
         //sphere.translate(2, 1.5f, 0);
         //vrRoom.add(sphere);
-        final Cylinder3D cylinder = new Cylinder3D();
-        cylinder.translateX(2);
-        vrRoom.add(cylinder);
+        final Pavilion3D pavilion3D = new Pavilion3D(10, 20);
+        vrRoom.add(pavilion3D);
         return vrRoom;
     }
 

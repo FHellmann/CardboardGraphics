@@ -1,4 +1,4 @@
-package cg.edu.hm.pohl.shapes;
+package edu.hm.cs.fh.cg.shapes;
 
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.model.data.GeometryGenerator;
