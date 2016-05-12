@@ -24,17 +24,15 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 public class Cylinder3D extends VRComponent {
 
     private static final String TAG = Cylinder3D.class.getSimpleName();
-    private static final int TESSELLATION = 64;
+    private static final int TESSELLATION = 128;
     private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2 * 2;
     private static final float RADIUS = .5f;
     private static final double PI_2 = 2.0f * Math.PI;
     private static final double DELTA_ANGLE = (Math.PI / (TESSELLATION / 2));
 
     private static final int FLOATS_PER_VERTEX = 3;
-    private static final int FLOATS_PER_COLOR = 4;
     private static final int FLOATS_PER_NORMAL = 3;
-
-    private float[] coneVertices;
+    private static final int FLOATS_PER_COLOR = 4;
 
     private FloatBuffer verticesBuffer;
     private FloatBuffer colorsBuffer;
@@ -50,21 +48,21 @@ public class Cylinder3D extends VRComponent {
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-    public Cylinder3D() {
-        shader = CardboardGraphicsActivity.studentSceneShader;
+    public Cylinder3D(Shader shader) {
+        this.shader = shader;
 
         createCylinder();
         // Get the shader's attribute and uniform handles used to delegate data from
         // the CPU to the GPU
-        locations.vertex_in = shader.getAttribute("vertex_in");
-        locations.color_in = shader.getAttribute("color_in");
-        locations.normal_in = shader.getAttribute("normal_in");
-        locations.pvm = shader.getUniform("pvm");
-        locations.vm = shader.getUniform("vm");
-        locations.lightpos = shader.getUniform("lightpos");
-        locations.light_ambient = shader.getUniform("light.ambient");
-        locations.light_diffuse = shader.getUniform("light.diffuse");
-        locations.light_specular = shader.getUniform("light.specular");
+        locations.vertex_in = this.shader.getAttribute("vertex_in");
+        locations.color_in = this.shader.getAttribute("color_in");
+        locations.normal_in = this.shader.getAttribute("normal_in");
+        locations.pvm = this.shader.getUniform("pvm");
+        locations.vm = this.shader.getUniform("vm");
+        locations.lightpos = this.shader.getUniform("lightpos");
+        locations.light_ambient = this.shader.getUniform("light.ambient");
+        locations.light_diffuse = this.shader.getUniform("light.diffuse");
+        locations.light_specular = this.shader.getUniform("light.specular");
         // Add this VRComponent in order to be rendered
         RendererManager.getInstance().add(this);
     }
@@ -74,7 +72,7 @@ public class Cylinder3D extends VRComponent {
         shader.use();
 
         // Set the identity of the matrix
-        identity();
+        //identity();
 
         // Update collision box bounds
         updateBounds(this);
@@ -109,11 +107,11 @@ public class Cylinder3D extends VRComponent {
         glVertexAttribPointer(locations.color_in, FLOATS_PER_COLOR, GL_FLOAT, false, 0, colorsBuffer);
         glVertexAttribPointer(locations.normal_in, FLOATS_PER_NORMAL, GL_FLOAT, false, 0, normalsBuffer);
 
-        glDrawArrays(GLES20.GL_TRIANGLES, 0, coneVertices.length / FLOATS_PER_VERTEX);
+        glDrawArrays(GLES20.GL_TRIANGLES, 0, NUMBER_OF_VERTICES / FLOATS_PER_VERTEX);
     }
 
     private void createCylinder() {
-        coneVertices = new float[NUMBER_OF_VERTICES];
+        final float[] coneVertices = new float[NUMBER_OF_VERTICES];
         final float[] coneColors = new float[NUMBER_OF_VERTICES / 3 * 4];
         final float[] coneNormals = new float[NUMBER_OF_VERTICES];
 

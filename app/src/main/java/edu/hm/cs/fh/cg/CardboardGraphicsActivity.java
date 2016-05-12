@@ -18,11 +18,13 @@ import edu.hm.cs.fh.cg.models.StudentScene;
  */
 public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
-    public static Shader studentSceneShader;
     private static final int WAYPOINTS = 6;
     private static final float WAYPOINTS_DISTANCE = 2.5f;
 
     private StudentScene studentScene;
+
+    private Shader studentSceneShader;
+    private Shader pavilionShader;
 
     @Override
     protected int getCardboardViewId() {
@@ -47,16 +49,17 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
         final VRRoom vrRoom = new VRRoom(25, 10, 25);
 
-        studentScene = new StudentScene();
-        studentScene.translateX(2f);
-        vrRoom.add(studentScene);
+        //studentScene = new StudentScene();
+        //studentScene.translateX(2f);
+        //vrRoom.add(studentScene);
         //final Cube cube = new Cube();
         //cube.translate(2, 1, 0);
         //vrRoom.add(cube);
         //final Sphere sphere = new Sphere();
         //sphere.translate(2, 1.5f, 0);
         //vrRoom.add(sphere);
-        final Pavilion3D pavilion3D = new Pavilion3D(10, 20);
+        final Pavilion3D pavilion3D = new Pavilion3D(pavilionShader, 4, 3);
+        pavilion3D.translateX(2f).translateZ(2f);
         vrRoom.add(pavilion3D);
         return vrRoom;
     }
@@ -73,12 +76,14 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
     protected void initShaders() {
         super.initShaders();
         studentSceneShader = new Shader(R.raw.vertex, R.raw.fragment);
+        pavilionShader = new Shader(R.raw.vertex, R.raw.fragment);
     }
 
     @Override
     public void onRendererShutdown() {
         super.onRendererShutdown();
         studentSceneShader.dispose();
+        pavilionShader.dispose();
     }
 
     private void setWaypoints() {

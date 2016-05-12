@@ -58,8 +58,8 @@ public class StudentScene extends VRComponent {
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-    public StudentScene() {
-        shader = CardboardGraphicsActivity.studentSceneShader;
+    public StudentScene(Shader shader) {
+        this.shader = shader;
 
         createCone();
         // Get the shader's attribute and uniform handles used to delegate data from
