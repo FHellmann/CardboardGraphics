@@ -5,13 +5,12 @@ import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.model.shapes.Cube;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.ArrowTapNavigator;
-import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.LockedArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.waypoint.WaypointNavigator;
 import ba.pohl1.hm.edu.vrlibrary.ui.AbstractCardboardActivity;
 import ba.pohl1.hm.edu.vrlibrary.util.CardboardGraphics;
 import ba.pohl1.hm.edu.vrlibrary.util.Shader;
 import ba.pohl1.hm.edu.vrlibrary.model.shapes.VRRoom;
-import cg.edu.hm.pohl.shapes.Cube3D;
+import cg.edu.hm.pohl.shapes.Cylinder3D;
 import cg.edu.hm.pohl.shapes.Sphere;
 import cg.edu.hm.pohl.student.StudentScene;
 
@@ -49,14 +48,17 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
         final VRRoom vrRoom = new VRRoom(25, 10, 25);
 
-        studentScene = new StudentScene();
-        vrRoom.add(studentScene);
-        final Cube cube = new Cube();
-        cube.translate(0, 1, 0);
-        vrRoom.add(cube);
-        final Sphere sphere = new Sphere();
-        sphere.translate(0, 1, 0);
-        vrRoom.add(sphere);
+        //studentScene = new StudentScene();
+        //vrRoom.add(studentScene);
+        //final Cube cube = new Cube();
+        //cube.translate(2, 1, 0);
+        //vrRoom.add(cube);
+        //final Sphere sphere = new Sphere();
+        //sphere.translate(2, 1.5f, 0);
+        //vrRoom.add(sphere);
+        final Cylinder3D cylinder = new Cylinder3D();
+        cylinder.translateX(2);
+        vrRoom.add(cylinder);
         return vrRoom;
     }
 
@@ -64,7 +66,7 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
     public void setNavigator(VRNavigator navigator) {
         super.setNavigator(navigator);
         if(navigator instanceof WaypointNavigator) {
-            setWaypoints();
+            //setWaypoints();
         }
     }
 
