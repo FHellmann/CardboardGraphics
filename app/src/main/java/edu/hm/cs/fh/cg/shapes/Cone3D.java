@@ -1,4 +1,4 @@
-package edu.hm.cs.fh.cg.models;
+package edu.hm.cs.fh.cg.shapes;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -21,10 +21,10 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 /**
  * Created by Pohl on 14.04.2016.
  */
-public class StudentScene extends VRComponent {
+public class Cone3D extends VRComponent {
 
-    private static final String TAG = "StudentScene";
-    private static final int TESSELLATION = 8;
+    private static final String TAG = Cone3D.class.getSimpleName();
+    private static final int TESSELLATION = 128;
     private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2;
     private static final float RADIUS = .5f;
     private static final double PI_2 = 2.0f * Math.PI;
@@ -58,7 +58,7 @@ public class StudentScene extends VRComponent {
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-    public StudentScene(Shader shader) {
+    public Cone3D(Shader shader) {
         this.shader = shader;
 
         createCone();
@@ -80,14 +80,6 @@ public class StudentScene extends VRComponent {
     public void draw(final float[] view, float[] projection) {
         // Use the shader
         shader.use();
-
-        // Set the identity of the matrix
-        identity();
-
-        // Transform the shape
-        translateZ(-5f);
-        translateY(2.0f);
-        rotateZ(90);
 
         // Update collision box bounds
         updateBounds(this);
@@ -186,16 +178,16 @@ public class StudentScene extends VRComponent {
             coneBottomNormals[vertexIndex + 1] = 1f;
             coneBottomNormals[vertexIndex + 2] = 0;
             // Second bottom vertex
-            coneBottomVertices[vertexIndex + 3] = x1;
+            coneBottomVertices[vertexIndex + 3] = x2;
             coneBottomVertices[vertexIndex + 4] = -.5f;
-            coneBottomVertices[vertexIndex + 5] = z1;
+            coneBottomVertices[vertexIndex + 5] = z2;
             coneBottomNormals[vertexIndex + 3] = 0;
             coneBottomNormals[vertexIndex + 4] = 1f;
             coneBottomNormals[vertexIndex + 5] = 0;
             // Third bottom vertex
-            coneBottomVertices[vertexIndex + 6] = x2;
+            coneBottomVertices[vertexIndex + 6] = x1;
             coneBottomVertices[vertexIndex + 7] = -.5f;
-            coneBottomVertices[vertexIndex + 8] = z2;
+            coneBottomVertices[vertexIndex + 8] = z1;
             coneBottomNormals[vertexIndex + 6] = 0;
             coneBottomNormals[vertexIndex + 7] = 1f;
             coneBottomNormals[vertexIndex + 8] = 0;

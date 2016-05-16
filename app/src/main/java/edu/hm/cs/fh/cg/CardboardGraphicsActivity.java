@@ -11,19 +11,12 @@ import ba.pohl1.hm.edu.vrlibrary.util.Shader;
 import ba.pohl1.hm.edu.vrlibrary.model.shapes.VRRoom;
 import cg.edu.hm.pohl.R;
 import edu.hm.cs.fh.cg.models.Pavilion3D;
-import edu.hm.cs.fh.cg.models.StudentScene;
+import edu.hm.cs.fh.cg.shapes.Cone3D;
 
 /**
  * Created by Pohl on 14.04.2016.
  */
 public class CardboardGraphicsActivity extends AbstractCardboardActivity {
-
-    private static final int WAYPOINTS = 6;
-    private static final float WAYPOINTS_DISTANCE = 2.5f;
-
-    private StudentScene studentScene;
-
-    private Shader studentSceneShader;
     private Shader pavilionShader;
 
     @Override
@@ -49,57 +42,27 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
         final VRRoom vrRoom = new VRRoom(25, 10, 25);
 
-        //studentScene = new StudentScene();
-        //studentScene.translateX(2f);
-        //vrRoom.add(studentScene);
-        //final Cube cube = new Cube();
-        //cube.translate(2, 1, 0);
-        //vrRoom.add(cube);
-        //final Sphere sphere = new Sphere();
-        //sphere.translate(2, 1.5f, 0);
-        //vrRoom.add(sphere);
-        final Pavilion3D pavilion3D = new Pavilion3D(pavilionShader, 4, 3);
-        pavilion3D.translateX(2f).translateZ(2f);
-        vrRoom.add(pavilion3D);
-        return vrRoom;
-    }
+        final Cone3D cone = new Cone3D(pavilionShader);
+        cone.translateX(3);
+        cone.translateY(2);
+        cone.rotateZ(90);
+        vrRoom.add(cone);
 
-    @Override
-    public void setNavigator(VRNavigator navigator) {
-        super.setNavigator(navigator);
-        if(navigator instanceof WaypointNavigator) {
-            //setWaypoints();
-        }
+        final Pavilion3D pavilion = new Pavilion3D(pavilionShader, 3, 3);
+        vrRoom.add(pavilion);
+
+        return vrRoom;
     }
 
     @Override
     protected void initShaders() {
         super.initShaders();
-        studentSceneShader = new Shader(R.raw.vertex, R.raw.fragment);
         pavilionShader = new Shader(R.raw.vertex, R.raw.fragment);
     }
 
     @Override
     public void onRendererShutdown() {
         super.onRendererShutdown();
-        studentSceneShader.dispose();
         pavilionShader.dispose();
-    }
-
-    private void setWaypoints() {
-        // Clear all default way points
-        getNavigator().dispose();
-
-        final Vector3 scenePos = studentScene.getPosition();
-        float x = scenePos.x;
-        float y = scenePos.y;
-        float z = scenePos.z;
-        float radius = WAYPOINTS_DISTANCE;
-        float deltaAngle = 360 / WAYPOINTS;
-        for(int angle = 0; angle < 360; angle += deltaAngle) {
-            final float rX = (float) Math.cos(Math.toRadians(angle)) * radius;
-            final float rZ = (float) Math.sin(Math.toRadians(angle)) * radius;
-            ((WaypointNavigator) getNavigator()).addWaypointAt(0.2f, x + rX, y + 1f, z + rZ);
-        }
     }
 }
