@@ -1,14 +1,11 @@
 package edu.hm.cs.fh.cg;
 
-import ba.pohl1.hm.edu.vrlibrary.maths.Vector3;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
-import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
+import ba.pohl1.hm.edu.vrlibrary.model.shapes.VRRoom;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.ArrowTapNavigator;
-import ba.pohl1.hm.edu.vrlibrary.navigation.waypoint.WaypointNavigator;
 import ba.pohl1.hm.edu.vrlibrary.ui.AbstractCardboardActivity;
 import ba.pohl1.hm.edu.vrlibrary.util.CardboardGraphics;
 import ba.pohl1.hm.edu.vrlibrary.util.Shader;
-import ba.pohl1.hm.edu.vrlibrary.model.shapes.VRRoom;
 import cg.edu.hm.pohl.R;
 import edu.hm.cs.fh.cg.models.Pavilion3D;
 import edu.hm.cs.fh.cg.shapes.Cone3D;
