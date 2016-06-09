@@ -37,22 +37,35 @@ public class Pavilion3D extends VRComponent {
 
             final Cylinder3D cylinder = new Cylinder3D(shader);
             cylinder.identity().translateX(x1).translateZ(z1).scale(cylinderWidth, cylinderHeight, cylinderWidth);
+            cylinder.setPreAnimationHandler(new AnimationHandler() {
+                @Override
+                public void animate(float delta, Matrix4x4 model) {
+                    cylinder.rotateY(1f);
+                }
+            });
             add(cylinder);
 
             final Sphere sphere = new Sphere();
             sphere.identity().translate(x1, y1, z1).scale(sphereSize, sphereSize, sphereSize);
             sphere.setPreAnimationHandler(new AnimationHandler() {
                 private float direction = 1;
+                private float scaleDirection = 1;
 
                 @Override
                 public void animate(float delta, Matrix4x4 model) {
-                    delta = .1f;
                     if(sphere.getPosition().y < sphereSize / 2) {
                         direction = 1;
                     } else if(sphere.getPosition().y > cylinderHeight - sphereSize / 2) {
                         direction = -1;
                     }
-                    sphere.translateY(delta * direction);
+                    sphere.translateY(.1f * direction);
+
+                    if(sphere.getBoundingBox().getHeight() > sphereSize * 1.5f) {
+                        scaleDirection = -1;
+                    } else if(sphere.getBoundingBox().getHeight() < sphereSize) {
+                        scaleDirection = 1;
+                    }
+                    sphere.scale(1 + .025f * scaleDirection);
                 }
             });
             add(sphere);

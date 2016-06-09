@@ -24,7 +24,7 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 public class Cylinder3D extends VRComponent {
 
     private static final String TAG = Cylinder3D.class.getSimpleName();
-    private static final int TESSELLATION = 128;
+    private static final int TESSELLATION = 32;
     private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2 * 2;
     private static final float RADIUS = .5f;
     private static final double PI_2 = 2.0f * Math.PI;
