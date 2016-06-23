@@ -9,7 +9,6 @@ import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.rendering.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
 import ba.pohl1.hm.edu.vrlibrary.util.Shader;
-import edu.hm.cs.fh.cg.CardboardGraphicsActivity;
 import edu.hm.cs.fh.cg.DataStructures;
 
 import static android.opengl.GLES20.GL_FLOAT;
@@ -21,7 +20,7 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 /**
  * Created by Pohl on 14.04.2016.
  */
-public class Cone3D extends VRComponent {
+public class Cone3D extends VRComponent implements IObject3D {
 
     private static final String TAG = Cone3D.class.getSimpleName();
     private static final int TESSELLATION = 128;
@@ -35,11 +34,7 @@ public class Cone3D extends VRComponent {
     private static final int FLOATS_PER_NORMAL = 3;
 
     private float[] coneVertices;
-    private float[] coneColors;
-    private float[] coneNormals;
     private float[] coneBottomVertices;
-    private float[] coneBottomColors;
-    private float[] coneBottomNormals;
 
     private FloatBuffer verticesBuffer;
     private FloatBuffer colorsBuffer;
@@ -53,13 +48,20 @@ public class Cone3D extends VRComponent {
     private DataStructures.Locations locations = new DataStructures.Locations();
     private DataStructures.AnimationParameters animation = new DataStructures.AnimationParameters();
 
-    private float[] lightpos = {0.f, 5.f, -4.f, 1.f};
+    private float[] lightpos;
     private float[] lightpos_eye = new float[4];
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-    public Cone3D(Shader shader) {
+    public Cone3D(Shader shader, float[] lightpos) {
         this.shader = shader;
+        this.lightpos = lightpos;
+
+        /*
+        light.ambient = new float[] { .25f, .20f, .07f, 1.f };
+        light.diffuse = new float[] { .75f, .61f, .23f, 1.f };
+        light.specular = new float[] { .63f, .56f, .37f, 1.f };
+        */
 
         createCone();
         // Get the shader's attribute and uniform handles used to delegate data from
@@ -128,11 +130,11 @@ public class Cone3D extends VRComponent {
 
     private void createCone() {
         coneVertices = new float[NUMBER_OF_VERTICES];
-        coneColors = new float[NUMBER_OF_VERTICES / 3 * 4];
-        coneNormals = new float[NUMBER_OF_VERTICES];
+        final float[] coneColors = new float[NUMBER_OF_VERTICES / 3 * 4];
+        final float[] coneNormals = new float[NUMBER_OF_VERTICES];
         coneBottomVertices = new float[NUMBER_OF_VERTICES];
-        coneBottomColors = new float[NUMBER_OF_VERTICES / 3 * 4];
-        coneBottomNormals = new float[NUMBER_OF_VERTICES];
+        final float[] coneBottomColors = new float[NUMBER_OF_VERTICES / 3 * 4];
+        final float[] coneBottomNormals = new float[NUMBER_OF_VERTICES];
 
         int index = 0;
         for (float angle = 0.0f; angle < PI_2; angle += DELTA_ANGLE) {
@@ -193,7 +195,8 @@ public class Cone3D extends VRComponent {
             coneBottomNormals[vertexIndex + 8] = 0;
 
             // Alternate the color
-            float colorR, colorG, colorB, colorA;
+            float colorR = .25f, colorG = .20f, colorB = .07f, colorA = 1.f;
+            /*
             if ((index % 2) == 0) {
                 colorR = 1f;
                 colorG = 0f;
@@ -205,6 +208,7 @@ public class Cone3D extends VRComponent {
                 colorB = 1f;
                 colorA = 1f;
             }
+            */
             coneColors[colorIndex] = colorR;
             coneColors[colorIndex + 1] = colorG;
             coneColors[colorIndex + 2] = colorB;
@@ -240,5 +244,20 @@ public class Cone3D extends VRComponent {
         verticesBottomBuffer = CGUtils.createFloatBuffer(coneBottomVertices);
         colorsBottomBuffer = CGUtils.createFloatBuffer(coneBottomColors);
         normalsBottomBuffer = CGUtils.createFloatBuffer(coneBottomNormals);
+    }
+
+    @Override
+    public FloatBuffer getVertices() {
+        return verticesBuffer;
+    }
+
+    @Override
+    public FloatBuffer getColors() {
+        return colorsBuffer;
+    }
+
+    @Override
+    public FloatBuffer getNormals() {
+        return normalsBuffer;
     }
 }

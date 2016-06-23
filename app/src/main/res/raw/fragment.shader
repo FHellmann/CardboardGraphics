@@ -36,5 +36,8 @@ void main()
         s = pow(max(0.f, dot(nViewdir, ref)), 16.f);
     }
 
-    frag_color = lightcolor * color_vary + s * light.specular;
+    frag_color = lightcolor * color_vary + s * light.specular; //vec4(nNormal/2.0+vec3(0.5),1);
+
+    // frag_color = (light.ambient + light.diffuse * max(0.f, dot(nNormal, nLightdir))) * color_vary
+    //               + pow(max(0.f, dot(nViewdir, normalize(reflect(-nLightdir, nNormal)))), 16.f) * light.specular;
 }

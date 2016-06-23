@@ -14,6 +14,9 @@ import edu.hm.cs.fh.cg.shapes.Cone3D;
  * Created by Pohl on 14.04.2016.
  */
 public class CardboardGraphicsActivity extends AbstractCardboardActivity {
+
+    private float[] lightpos = {0.f, 5.f, 0.f, 0.f};
+
     private Shader pavilionShader;
 
     @Override
@@ -39,13 +42,13 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
         final VRRoom vrRoom = new VRRoom(25, 10, 25);
 
-        final Cone3D cone = new Cone3D(pavilionShader);
+        final Cone3D cone = new Cone3D(pavilionShader, lightpos);
         cone.translateX(3);
         cone.translateY(2);
         cone.rotateZ(90);
         vrRoom.add(cone);
 
-        final Pavilion3D pavilion = new Pavilion3D(pavilionShader, 3, 3);
+        final Pavilion3D pavilion = new Pavilion3D(pavilionShader, lightpos, 3, 3, false);
         vrRoom.add(pavilion);
 
         return vrRoom;

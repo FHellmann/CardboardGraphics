@@ -9,7 +9,6 @@ import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.rendering.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
 import ba.pohl1.hm.edu.vrlibrary.util.Shader;
-import edu.hm.cs.fh.cg.CardboardGraphicsActivity;
 import edu.hm.cs.fh.cg.DataStructures;
 
 import static android.opengl.GLES20.GL_FLOAT;
@@ -21,10 +20,10 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 /**
  * Created by Fabio Hellmann on 12.05.2016.
  */
-public class Cylinder3D extends VRComponent {
+public class Cylinder3D extends VRComponent implements IObject3D {
 
     private static final String TAG = Cylinder3D.class.getSimpleName();
-    private static final int TESSELLATION = 32;
+    private static final int TESSELLATION = 16;
     private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2 * 2;
     private static final float RADIUS = .5f;
     private static final double PI_2 = 2.0f * Math.PI;
@@ -43,13 +42,18 @@ public class Cylinder3D extends VRComponent {
     private DataStructures.Locations locations = new DataStructures.Locations();
     private DataStructures.AnimationParameters animation = new DataStructures.AnimationParameters();
 
-    private float[] lightpos = {0.f, 5.f, -4.f, 1.f};
+    private float[] lightpos;
     private float[] lightpos_eye = new float[4];
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-    public Cylinder3D(Shader shader) {
+    public Cylinder3D(Shader shader, float[] lightpos) {
         this.shader = shader;
+        this.lightpos = lightpos;
+
+        //light.ambient = new float[] { .23f, .23f, .23f, 1.f };
+        //light.diffuse = new float[] { .28f, .28f, .28f, 1.f };
+        //light.specular = new float[] { .77f, .77f, .77f, 1.f };
 
         createCylinder();
         // Get the shader's attribute and uniform handles used to delegate data from
@@ -133,9 +137,10 @@ public class Cylinder3D extends VRComponent {
             coneVertices[vertexIndex] = x1;
             coneVertices[vertexIndex + 1] = 0;
             coneVertices[vertexIndex + 2] = z1;
-            coneNormals[vertexIndex] = 0;
+            coneNormals[vertexIndex] = x1;
             coneNormals[vertexIndex + 1] = 0;
-            coneNormals[vertexIndex + 2] = 0;
+            coneNormals[vertexIndex + 2] = z1;
+
             // Second vertex
             coneVertices[vertexIndex + 3] = x2;
             coneVertices[vertexIndex + 4] = 0;
@@ -148,16 +153,16 @@ public class Cylinder3D extends VRComponent {
             coneVertices[vertexIndex + 7] = 1f;
             coneVertices[vertexIndex + 8] = z2;
             coneNormals[vertexIndex + 6] = x2;
-            coneNormals[vertexIndex + 7] = -1f;
+            coneNormals[vertexIndex + 7] = 0;
             coneNormals[vertexIndex + 8] = z2;
 
             // First vertex
             coneVertices[vertexIndex + 9] = x1;
             coneVertices[vertexIndex + 10] = 1f;
             coneVertices[vertexIndex + 11] = z1;
-            coneNormals[vertexIndex + 9] = 0;
-            coneNormals[vertexIndex + 10] = 1f;
-            coneNormals[vertexIndex + 11] = 0;
+            coneNormals[vertexIndex + 9] = x1;
+            coneNormals[vertexIndex + 10] = 0;
+            coneNormals[vertexIndex + 11] = z1;
             // Second vertex
             coneVertices[vertexIndex + 12] = x1;
             coneVertices[vertexIndex + 13] = 0;
@@ -170,11 +175,12 @@ public class Cylinder3D extends VRComponent {
             coneVertices[vertexIndex + 16] = 1f;
             coneVertices[vertexIndex + 17] = z2;
             coneNormals[vertexIndex + 15] = x2;
-            coneNormals[vertexIndex + 16] = -1f;
+            coneNormals[vertexIndex + 16] = 0;
             coneNormals[vertexIndex + 17] = z2;
 
             // Alternate the color
-            float colorR, colorG, colorB, colorA;
+            float colorR = .23f, colorG = .28f, colorB = .77f, colorA = 1.f;
+            /*
             if ((index % 2) == 0) {
                 colorR = 1f;
                 colorG = 0f;
@@ -186,6 +192,7 @@ public class Cylinder3D extends VRComponent {
                 colorB = 1f;
                 colorA = 1f;
             }
+            */
             coneColors[colorIndex] = colorR;
             coneColors[colorIndex + 1] = colorG;
             coneColors[colorIndex + 2] = colorB;
@@ -216,5 +223,20 @@ public class Cylinder3D extends VRComponent {
         verticesBuffer = CGUtils.createFloatBuffer(coneVertices);
         colorsBuffer = CGUtils.createFloatBuffer(coneColors);
         normalsBuffer = CGUtils.createFloatBuffer(coneNormals);
+    }
+
+    @Override
+    public FloatBuffer getVertices() {
+        return verticesBuffer;
+    }
+
+    @Override
+    public FloatBuffer getColors() {
+        return colorsBuffer;
+    }
+
+    @Override
+    public FloatBuffer getNormals() {
+        return normalsBuffer;
     }
 }

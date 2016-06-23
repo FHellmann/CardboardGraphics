@@ -39,8 +39,8 @@ public class DataStructures {
     }
 
     public static class LightParameters {
-        public float[] ambient = { 1.f, 1.f, 1.f, 1.f };
-        public float[] diffuse = { 0.f, 0.f, 0.f, 0.f };
-        public float[] specular = { 0.f, 0.f, 0.f, 0.f };
+        public float[] ambient = { 0.3f, 0.3f, 0.3f, 0.3f };
+        public float[] diffuse = { 1.f, 1.f, 1.f, 1.f };
+        public float[] specular = { 0.4f, 0.4f, 0.4f, 0.4f };
     }
 }
